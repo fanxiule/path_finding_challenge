@@ -13,14 +13,61 @@ int main()
     std::cout << "Number of Columns: " << map.COL << std::endl; //debug
     */
 
-    Node node1(0, 0);
-    std::cout << "node1 col ind: " << node1.getColIndex();
-    std::cout << "node1 row ind: " << node1.getRowIndex();
+    Waypoint waypoint1;
+    waypoint1.col_ind = 0;
+    waypoint1.row_ind = 0;
 
-    Node node2(1, 5);
-    Node node3(-5, -10);
-    Node node4(20, 60);
+    Node node1(15, 10);
+    node1.showInfo();
+    std::cout << "########################" << std::endl;
+    node1.calHeuristic(waypoint1);
+    node1.showInfo();
 
+    Node node2(node1, 1);
+    node2.showInfo();
+    std::cout << "########################" << std::endl;
+    node2.calCurrentCost();
+    node2.calHeuristic(waypoint1);
+    node2.showInfo();
+
+    Node node3(node2, 1);
+    node3.showInfo();
+    std::cout << "########################" << std::endl;
+    node3.calCurrentCost();
+    node3.calHeuristic(waypoint1);
+    node3.showInfo();
+
+    Node node4(node3, 3);
+    node4.showInfo();
+    std::cout << "########################" << std::endl;
+    node4.calCurrentCost();
+    node4.calHeuristic(waypoint1);
+    node4.showInfo();
+
+    /*
+    Node node2(node1, 1);
+    node2.showInfo();
+    node2.calCurrentCost();
+    std::cout << "node2 current cost is g = " << node2.getCurrentCost() << " total cost is f = " << node2.getTotalCost() << std::endl;
+   
+    std::cout << "########################" << std::endl;
+    Node node3(node2, 3);
+    node3.showInfo();
+    node3.calCurrentCost();
+    std::cout << "node3 current cost is g = " << node3.getCurrentCost() << " total cost is f = " << node3.getTotalCost() << std::endl;
+
+    std::cout << "########################" << std::endl;
+    Node node4(node3, 1);
+    node4.showInfo();
+    node4.calCurrentCost();
+    std::cout << "node4 current cost is g = " << node4.getCurrentCost() << " total cost is f = " << node4.getTotalCost() << std::endl;
+
+    std::cout << "########################" << std::endl;
+    Node node5(node4, 1);
+    node5.showInfo();
+    node5.calCurrentCost();
+    std::cout << "node3 current cost is g = " << node5.getCurrentCost() << " total cost is f = " << node5.getTotalCost() << std::endl;
+    */
     /*
     //for getting input
     std::string input;

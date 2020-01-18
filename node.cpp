@@ -7,13 +7,14 @@ Node::Node(int col, int row) //for a starting node
         col_ind = col;
         row_ind = row;
         parent = nullptr; //for start node, there is no parent
+        calTotalCost();
         validity = true;
         std::cout << "Node created" << std::endl; //debug
     }
 
     else
     {
-        std::cout << "Invalid node" << std::endl;
+        std::cout << "Invalid node" << std::endl; //debug
         validity = false;
     }
 }
@@ -24,18 +25,19 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
     {
     case 1: //go up
     {
-        if (validPoint(parent_node.row_ind + 1))
+        if (validPoint(parent_node.row_ind + 5) && parent_node.getValidity() == true)
         {
             col_ind = parent_node.col_ind;
-            row_ind = parent_node.row_ind + 1;
+            row_ind = parent_node.row_ind + 5;
             parent = &parent_node;
+            calTotalCost();
             validity = true;
             std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            std::cout << "Invalid node" << std::endl;
+            std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
@@ -43,17 +45,19 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
 
     case 2: //go down
     {
-        if (validPoint(parent_node.row_ind - 1))
+        if (validPoint(parent_node.row_ind - 5) && parent_node.getValidity() == true)
         {
             col_ind = parent_node.col_ind;
-            row_ind = parent_node.row_ind - 1;
+            row_ind = parent_node.row_ind - 5;
             parent = &parent_node;
+            calTotalCost();
             validity = true;
+            std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            std::cout << "Invalid node" << std::endl;
+            std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
@@ -61,17 +65,19 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
 
     case 3: //go left
     {
-        if (validPoint(parent_node.col_ind - 1))
+        if (validPoint(parent_node.col_ind - 5) && parent_node.getValidity() == true)
         {
-            col_ind = parent_node.col_ind - 1;
+            col_ind = parent_node.col_ind - 5;
             row_ind = parent_node.row_ind;
             parent = &parent_node;
+            calTotalCost();
             validity = true;
+            std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            std::cout << "Invalid node" << std::endl;
+            std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
@@ -79,24 +85,26 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
 
     case 4: //go left
     {
-        if (validPoint(parent_node.col_ind + 1))
+        if (validPoint(parent_node.col_ind + 5) && parent_node.getValidity() == true)
         {
-            col_ind = parent_node.col_ind + 1;
+            col_ind = parent_node.col_ind + 5;
             row_ind = parent_node.row_ind;
             parent = &parent_node;
+            calTotalCost();
             validity = true;
+            std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            std::cout << "Invalid node" << std::endl;
+            std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
     }
 
     default:
-        std::cout << "Invalid node" << std::endl;
+        std::cout << "Invalid node" << std::endl; //debug
         validity = false;
     }
 }
@@ -130,18 +138,21 @@ bool Node::isHazard()
     { //if the current node is in hazard zone
         if ((std::find(hazard_index, hazard_index + array_size, parent->row_ind) != hazard_index + array_size) &&
             (std::find(hazard_index, hazard_index + array_size, parent->col_ind) != hazard_index + array_size))
-        {                //if the parent is also in hazard zone
+        { //if the parent is also in hazard zone
+            std::cout << "moving in hazard zone" << std::endl; //debug
             return true; //moving from parent to current is hazard
         }
 
         else
         {
+            std::cout << "not moving in hazard zone" << std::endl; //debug
             return false;
         }
     }
 
     else
     {
+        std::cout << "not moving in hazard zone" << std::endl; //debug
         return false;
     }
 }
@@ -150,6 +161,7 @@ bool Node::dirChange()
 {
     if (parent->parent == nullptr) //if the parent node is a starting node
     {
+        std::cout << "No direction change" << std::endl; //debug
         return false;
     }
 
@@ -158,12 +170,14 @@ bool Node::dirChange()
         if ((col_ind == parent->col_ind && parent->col_ind == parent->parent->col_ind) ||
             (row_ind == parent->row_ind && parent->row_ind == parent->parent->row_ind))
         { //if current node, its parent node and its parent's parent node are on the same row/col
-            return true;
+            std::cout << "No direction change" << std::endl; //debug
+            return false;
         }
 
         else
         {
-            return false;
+            std::cout << "Direction changed" << std::endl; //debug
+            return true;
         }
     }
 }
@@ -203,6 +217,11 @@ bool Node::getValidity()
     return validity;
 }
 
+Node *Node::getParent()
+{
+    return parent;
+}
+
 double Node::calculateTime()
 {
     double time; //in seconds
@@ -218,6 +237,7 @@ double Node::calculateTime()
 
     if (dirChange())
     { //if the robot changes its direction, extra 0.5 sec is needed
+        std::cout << "additional time needed" << std::endl; //debug
         time += CHANGE_DIR_TIME;
     }
 
@@ -232,7 +252,30 @@ void Node::calCurrentCost()
 
 void Node::calHeuristic(Waypoint target_point)
 {
-    h = NON_HAZARD_TIME * abs(target_point.col_ind - col_ind) + NON_HAZARD_TIME * abs(target_point.row_ind - row_ind);
+    h = NON_HAZARD_TIME * abs((target_point.col_ind - col_ind) / 5) + NON_HAZARD_TIME * abs((target_point.row_ind - row_ind) / 5);
     //use NON_HAZARD_TIME to estimate time left to reach target_point
     calTotalCost();
+}
+
+void Node::showInfo()
+{
+    if (validity == true)
+    {
+        std::cout << "The node is valid with col index " << col_ind << " and row index " << row_ind << std::endl;
+        std::cout << "The node's current cost g is " << g << ", heuristic h is " << h << ", and total cost f is " << f << std::endl;
+        if (parent != nullptr)
+        {
+            std::cout << "The parent node has col index " << parent->col_ind << " and row index " << parent->row_ind << std::endl;
+        }
+
+        else
+        {
+            std::cout << "The parent node is NULL" << std::endl;
+        }
+    }
+
+    else
+    {
+        std::cout << "The node is invalid" << std::endl;
+    }
 }

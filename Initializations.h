@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-#define HAZARD_TIME 5       //time to finish 5m in hazard zone
-#define NON_HAZARD_TIME 2   //time to finish 5m in non hazard zone
-#define CHANGE_DIR_TIME 0.5 //time to change robot direction
+#define HAZARD_TIME 5       //time in sec to finish 5m in hazard zone, 1 m/s
+#define NON_HAZARD_TIME 2   //time in sec to finish 5m in non hazard zone, 2.5 m/s
+#define CHANGE_DIR_TIME 0.5 //time in sec to change robot direction
 
 struct Waypoint
 {

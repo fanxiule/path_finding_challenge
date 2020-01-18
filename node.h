@@ -36,10 +36,12 @@ public:
     double getHeuristic();   //get h
     double getTotalCost();   //get f
     bool getValidity();      //get validity
+    Node *getParent();       //get parent node of the current node
 
     //public methods
     double calculateTime();                   //calculate time from parent to current node
     void calCurrentCost();                    //calculate g
     void calHeuristic(Waypoint target_point); //calculate h based on target point
+    void showInfo();                          //show node information
 };
 #endif /* NODE_H */
