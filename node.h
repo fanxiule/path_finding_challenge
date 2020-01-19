@@ -43,5 +43,6 @@ public:
     void calCurrentCost();                    //calculate g
     void calHeuristic(Waypoint target_point); //calculate h based on target point
     void showInfo();                          //show node information
+    void assignValues(Node *pNode);           //assign values from pNode to node
 };
 #endif /* NODE_H */

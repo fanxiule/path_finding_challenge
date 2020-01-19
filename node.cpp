@@ -83,7 +83,7 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
         break;
     }
 
-    case 4: //go left
+    case 4: //go right
     {
         if (validPoint(parent_node.col_ind + 5) && parent_node.getValidity() == true)
         {
@@ -138,9 +138,9 @@ bool Node::isHazard()
     { //if the current node is in hazard zone
         if ((std::find(hazard_index, hazard_index + array_size, parent->row_ind) != hazard_index + array_size) &&
             (std::find(hazard_index, hazard_index + array_size, parent->col_ind) != hazard_index + array_size))
-        { //if the parent is also in hazard zone
+        {                                                      //if the parent is also in hazard zone
             std::cout << "moving in hazard zone" << std::endl; //debug
-            return true; //moving from parent to current is hazard
+            return true;                                       //moving from parent to current is hazard
         }
 
         else
@@ -169,7 +169,7 @@ bool Node::dirChange()
     {
         if ((col_ind == parent->col_ind && parent->col_ind == parent->parent->col_ind) ||
             (row_ind == parent->row_ind && parent->row_ind == parent->parent->row_ind))
-        { //if current node, its parent node and its parent's parent node are on the same row/col
+        {                                                    //if current node, its parent node and its parent's parent node are on the same row/col
             std::cout << "No direction change" << std::endl; //debug
             return false;
         }
@@ -236,7 +236,7 @@ double Node::calculateTime()
     }
 
     if (dirChange())
-    { //if the robot changes its direction, extra 0.5 sec is needed
+    {                                                       //if the robot changes its direction, extra 0.5 sec is needed
         std::cout << "additional time needed" << std::endl; //debug
         time += CHANGE_DIR_TIME;
     }
@@ -278,4 +278,15 @@ void Node::showInfo()
     {
         std::cout << "The node is invalid" << std::endl;
     }
+}
+
+void Node::assignValues(Node *pNode)
+{
+    col_ind = pNode->getColIndex();
+    row_ind = pNode->getRowIndex();
+    g = pNode->getCurrentCost();
+    h = pNode->getHeuristic();
+    f = pNode->getTotalCost();
+    validity = pNode->getValidity();
+    parent = pNode->getParent();
 }
