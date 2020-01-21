@@ -27,22 +27,27 @@ public:
     //constructors and destructors
     Node(int row, int col);                 //constructor for a starting node
     Node(Node &parent_node, int direction); //constructor for non starting nodes
-    ~Node();                                //destructor
+    Node(const Node &other);                //copy constructor
+    Node &operator=(const Node &other);     //assignment operator
+    //Node(Node &&other);
+    //Node &operator=(Node &&other);
+    ~Node(); //destructor
 
     //setters and getters
-    int getColIndex();       //get column index of the node
-    int getRowIndex();       //get row index of the node
-    double getCurrentCost(); //get g
-    double getHeuristic();   //get h
-    double getTotalCost();   //get f
-    bool getValidity();      //get validity
-    Node *getParent();       //get parent node of the current node
+    int getColIndex();                 //get column index of the node
+    int getRowIndex();                 //get row index of the node
+    double getCurrentCost();           //get g
+    double getHeuristic();             //get h
+    double getTotalCost();             //get f
+    bool getValidity();                //get validity
+    Node *getParent();                 //get parent node of the current node
+    void setParent(Node &parent_node); //set parent
+    void setCurrentCost(double cost);  //set current cost g
 
     //public methods
     double calculateTime();                   //calculate time from parent to current node
     void calCurrentCost();                    //calculate g
     void calHeuristic(Waypoint target_point); //calculate h based on target point
     void showInfo();                          //show node information
-    void assignValues(Node *pNode);           //assign values from pNode to node
 };
 #endif /* NODE_H */

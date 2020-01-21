@@ -130,29 +130,22 @@ void Astar(Waypoint start, Waypoint end, std::vector<Node> &closed_list)
     while (open_list.size() != 0)
     {
         Node *pNode_current = nodeLowestCost(open_list);
-        /*std::cout << "yyyyyyyy" << std::endl;
         pNode_current->showInfo();
+        std::cout << "1" << std::endl;
         Node node_current(0, 0);
-        node_current.assignValues(pNode_current);
-        std::cout << "zzzzzzzzzzz" << std::endl;
+        node_current = *pNode_current;
+        std::cout << "2" << std::endl;
         node_current.showInfo();
         int open_list_ind = returnIndex(node_current, open_list);
-        std::cout << "index is" << open_list_ind << std::endl;
-        std::cout << "aaaaaaaaa" << std::endl;
+        std::cout << "index is " << open_list_ind << std::endl;
+        std::cout << "3" << std::endl;
         node_current.showInfo();
         open_list.erase(open_list.begin() + open_list_ind);
-        std::cout << "bbbbbbbbbb" << std::endl;
+        std::cout << "4" << std::endl;
         pNode_current->showInfo();
-        std::cout << "xxxxxxxx" << std::endl;
-        node_current.showInfo();*/
-        int open_list_ind = returnIndex(*pNode_current, open_list);
-        Node node_current = open_list[open_list_ind];
-        std::cout << "zzzzzzzzzzz" << std::endl;
+        std::cout << "5" << std::endl;
         node_current.showInfo();
-        open_list.erase(open_list.begin() + open_list_ind);
-        std::cout << "bbbbbbbbbb" << std::endl;
-        std::cout << "xxxxxxxx" << std::endl;
-        node_current.showInfo();
+
         if (node_current.getColIndex() == end.col_ind && node_current.getRowIndex() == start.row_ind)
         {
             break;
@@ -162,22 +155,28 @@ void Astar(Waypoint start, Waypoint end, std::vector<Node> &closed_list)
 
         for (int i = 0; i < successors.size(); i++)
         {
-            double suc_current_cost = node_current.getCurrentCost() + successors[i].calculateTime();
+            std::cout << std::endl;
+            successors[i].showInfo();
+            std::cout << std::endl;
 
+            bool flag = false;
+            double suc_current_cost = node_current.getCurrentCost() + successors[i].calculateTime();
+            std::cout << "current cost is " << suc_current_cost << std::endl;
             if (inVector(successors[i], open_list))
             {
                 Node suc_in_open = *returnInVector(node_current, open_list);
                 if (suc_in_open.getCurrentCost() <= suc_current_cost)
                 {
+                    flag = true;
                 }
             }
 
             else if (inVector(successors[i], closed_list))
             {
-                std::cout << "Seg fault" << std::endl;
                 Node suc_in_close = *returnInVector(successors[i], closed_list);
                 if (suc_in_close.getCurrentCost() <= suc_current_cost)
                 {
+                    flag = true;
                 }
 
                 else
@@ -192,6 +191,8 @@ void Astar(Waypoint start, Waypoint end, std::vector<Node> &closed_list)
             {
                 open_list.push_back(successors[i]);
             }
+            if (!flag)
+                successors[i].setCurrentCost(suc_current_cost);
         }
         closed_list.push_back(node_current);
     }
@@ -199,79 +200,46 @@ void Astar(Waypoint start, Waypoint end, std::vector<Node> &closed_list)
 
 int main()
 {
-    /*
-    Map map;
-    std::cout << "Number of Rows: " << map.ROW << std::endl;    //debug
-    std::cout << "Number of Columns: " << map.COL << std::endl; //debug
-    */
-
-    Waypoint waypoint1;
-    waypoint1.col_ind = 0;
-    waypoint1.row_ind = 0;
-
-    Node node1(15, 10);
-    node1.showInfo();
-    std::cout << "########################" << std::endl;
-    node1.calHeuristic(waypoint1);
+    Node node1(0, 0);
     node1.showInfo();
 
+    std::cout << "################" << std::endl;
     Node node2(node1, 1);
     node2.showInfo();
-    std::cout << "########################" << std::endl;
-    node2.calCurrentCost();
-    node2.calHeuristic(waypoint1);
-    node2.showInfo();
 
-    Node node3(node2, 1);
+    std::cout << "################" << std::endl;
+    Node node3 = node2;
     node3.showInfo();
-    std::cout << "########################" << std::endl;
-    node3.calCurrentCost();
-    node3.calHeuristic(waypoint1);
-    node3.showInfo();
+    Node* address = node3.getParent();
+    std::cout << address << std::endl;
 
-    Node node4(node3, 3);
-    node4.showInfo();
-    std::cout << "########################" << std::endl;
-    node4.calCurrentCost();
-    node4.calHeuristic(waypoint1);
+    std::cout << "################" << std::endl;
+    Node node4(node3, 4);
     node4.showInfo();
 
+    std::cout << "################" << std::endl;
+    node4 = node3;
+    node4.showInfo();
+
+    std::cout << "################" << std::endl;
+    node3.~Node();
+    node4.showInfo();
+    /*
+    //uisng A*
     Waypoint waypoint_start;
     waypoint_start.row_ind = waypoint_start.col_ind = 0;
 
     Waypoint waypoint_end;
     waypoint_end.row_ind = 0;
-    waypoint_end.col_ind = 5;
+    waypoint_end.col_ind = 10;
 
     std::vector<Node> closed_list;
     Astar(waypoint_start, waypoint_end, closed_list);
     std::cout << closed_list.size() << std::endl;
-    //closed_list[0].showInfo();
-    //closed_list[1].showInfo();
-    /*
-    Node node2(node1, 1);
-    node2.showInfo();
-    node2.calCurrentCost();
-    std::cout << "node2 current cost is g = " << node2.getCurrentCost() << " total cost is f = " << node2.getTotalCost() << std::endl;
-   
-    std::cout << "########################" << std::endl;
-    Node node3(node2, 3);
-    node3.showInfo();
-    node3.calCurrentCost();
-    std::cout << "node3 current cost is g = " << node3.getCurrentCost() << " total cost is f = " << node3.getTotalCost() << std::endl;
-
-    std::cout << "########################" << std::endl;
-    Node node4(node3, 1);
-    node4.showInfo();
-    node4.calCurrentCost();
-    std::cout << "node4 current cost is g = " << node4.getCurrentCost() << " total cost is f = " << node4.getTotalCost() << std::endl;
-
-    std::cout << "########################" << std::endl;
-    Node node5(node4, 1);
-    node5.showInfo();
-    node5.calCurrentCost();
-    std::cout << "node3 current cost is g = " << node5.getCurrentCost() << " total cost is f = " << node5.getTotalCost() << std::endl;
+    closed_list[0].showInfo();
+    closed_list[1].showInfo();
     */
+
     /*
     //for getting input
     std::string input;

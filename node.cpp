@@ -109,8 +109,45 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
     }
 }
 
+Node::Node(const Node &other) : parent(nullptr)
+{
+    col_ind = other.col_ind;
+    row_ind = other.row_ind;
+    f = other.f;
+    g = other.g;
+    h = other.h;
+    validity = other.validity;
+    if (other.parent)
+    {
+        parent = new Node(*other.parent);
+    }
+}
+
+Node &Node::operator=(const Node &other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    col_ind = other.col_ind;
+    row_ind = other.row_ind;
+    f = other.f;
+    g = other.g;
+    h = other.h;
+    validity = other.validity;
+    parent = nullptr;
+    if (other.parent)
+    {
+        parent = new Node(*other.parent);
+    }
+    return *this;
+}
+
 Node::~Node()
 {
+    std::cout << "1" << std::endl;
+    delete parent;
 }
 
 bool Node::validPoint(int number)
@@ -222,6 +259,16 @@ Node *Node::getParent()
     return parent;
 }
 
+void Node::setParent(Node &parent_node)
+{
+    parent = &parent_node;
+}
+
+void Node::setCurrentCost(double cost)
+{
+    g = cost;
+}
+
 double Node::calculateTime()
 {
     double time; //in seconds
@@ -278,15 +325,4 @@ void Node::showInfo()
     {
         std::cout << "The node is invalid" << std::endl;
     }
-}
-
-void Node::assignValues(Node *pNode)
-{
-    col_ind = pNode->getColIndex();
-    row_ind = pNode->getRowIndex();
-    g = pNode->getCurrentCost();
-    h = pNode->getHeuristic();
-    f = pNode->getTotalCost();
-    validity = pNode->getValidity();
-    parent = pNode->getParent();
 }
