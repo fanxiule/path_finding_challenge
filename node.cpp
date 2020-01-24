@@ -10,12 +10,10 @@ Node::Node(int col, int row) //for a starting node
         parent_row = row_ind; //index equal to current column (row) index
         calTotalCost();
         validity = true;
-        //std::cout << "Node created" << std::endl; //debug
     }
 
     else
     {
-        //std::cout << "Invalid node" << std::endl; //debug
         validity = false;
     }
 }
@@ -35,12 +33,10 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
             parent_g = parent_node.g;
             calTotalCost();
             validity = true;
-            //std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            //std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
@@ -57,12 +53,10 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
             parent_g = parent_node.g;
             calTotalCost();
             validity = true;
-            //std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            //std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
@@ -79,12 +73,10 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
             parent_g = parent_node.g;
             calTotalCost();
             validity = true;
-            //std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            //std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
@@ -101,19 +93,16 @@ Node::Node(Node &parent_node, int direction) //for all other nodes
             parent_g = parent_node.g;
             calTotalCost();
             validity = true;
-            //std::cout << "Node created" << std::endl; //debug
         }
 
         else
         {
-            //std::cout << "Invalid node" << std::endl; //debug
             validity = false;
         }
         break;
     }
 
     default:
-        std::cout << "Invalid node" << std::endl; //debug
         validity = false;
     }
 }
@@ -129,7 +118,6 @@ Node::Node(const Node &other) : col_ind(other.col_ind),
                                 parent_g(other.parent_g)
 
 {
-    //std::cout << "Node copied" << std::endl; //debug
 }
 
 Node &Node::operator=(const Node &other)
@@ -148,13 +136,11 @@ Node &Node::operator=(const Node &other)
     parent_col = other.parent_col;
     parent_row = other.parent_row;
     parent_g = other.parent_g;
-    //std::cout << "Node assiged" << std::endl; //debug
     return *this;
 }
 
 Node::~Node()
 {
-    //std::cout << "Node destroyed" << std::endl; //debug
 }
 
 bool Node::validPoint(int number)
@@ -182,21 +168,18 @@ bool Node::isHazard()
     { //if the current node is in hazard zone
         if ((std::find(hazard_index, hazard_index + array_size, parent_row) != hazard_index + array_size) &&
             (std::find(hazard_index, hazard_index + array_size, parent_col) != hazard_index + array_size))
-        {                                                      //if the parent is also in hazard zone
-            std::cout << "moving in hazard zone" << std::endl; //debug
-            return true;                                       //moving from parent to current is hazard
+        {                //if the parent is also in hazard zone
+            return true; //moving from parent to current is hazard
         }
 
         else
         {
-            std::cout << "not moving in hazard zone" << std::endl; //debug
             return false;
         }
     }
 
     else
     {
-        std::cout << "not moving in hazard zone" << std::endl; //debug
         return false;
     }
 }
@@ -205,26 +188,43 @@ bool Node::dirChange(Node &parent)
 {
     if (parent.col_ind == parent.parent_col && parent.row_ind == parent.parent_col) //if the parent node is a starting node
     {
-        std::cout << "No direction change" << std::endl; //debug
         return false;
     }
 
     else
     {
-        if (((col_ind == parent.col_ind && parent.col_ind == parent.parent_col) ||
-             (row_ind == parent.row_ind && parent.row_ind == parent.parent_row)) &&
-                (col_ind > parent.col_ind && parent.col_ind > parent.parent_col) ||
-            (row_ind > parent.row_ind && parent.row_ind > parent.parent_row) ||
-            (col_ind < parent.col_ind && parent.col_ind < parent.parent_col) ||
-            (row_ind < parent.row_ind && parent.row_ind < parent.parent_row))
-        {                                                    //if current node, its parent node and its parent's parent node are on the same row/col
-            std::cout << "No direction change" << std::endl; //debug
-            return false;
+        if (col_ind == parent.col_ind && parent.col_ind == parent.parent_col)
+        { //current node, parent node and parent's parent node on the same column
+            if ((row_ind > parent.row_ind && parent.row_ind > parent.parent_row) ||
+                (row_ind < parent.row_ind && parent.row_ind < parent.parent_row) ||
+                parent.row_ind == parent.parent_row) //move in the same column or the parent node is the start node
+            {
+                return false;
+            }
+
+            else
+            {
+                return true;
+            }
+        }
+
+        if (row_ind == parent.row_ind && parent.row_ind == parent.parent_row)
+        { //current node, parent node and parent's parent node on the same row
+            if ((col_ind > parent.col_ind && parent.col_ind > parent.parent_col) ||
+                (col_ind < parent.col_ind && parent.col_ind < parent.parent_col) ||
+                parent.col_ind == parent.parent_col) //move in the same row or the parent node is the start node
+            {
+                return false;
+            }
+
+            else
+            {
+                return true;
+            }
         }
 
         else
         {
-            std::cout << "Direction changed" << std::endl; //debug
             return true;
         }
     }
@@ -306,8 +306,7 @@ double Node::calculateTime(Node &parent)
     }
 
     if (dirChange(parent))
-    {                                                       //if the robot changes its direction, extra 0.5 sec is needed
-        std::cout << "additional time needed" << std::endl; //debug
+    { //if the robot changes its direction, extra 0.5 sec is needed
         time += CHANGE_DIR_TIME;
     }
 
@@ -322,8 +321,8 @@ void Node::calCurrentCost(Node &parent)
 
 void Node::calHeuristic(Waypoint &target_point)
 {
-    h = NON_HAZARD_TIME * abs((target_point.col_ind - col_ind) / 5) + NON_HAZARD_TIME * abs((target_point.row_ind - row_ind) / 5);
-    //use NON_HAZARD_TIME to estimate time left to reach target_point
+    h = HEURISTIC_TIME * abs((target_point.col_ind - col_ind) / 5) + HEURISTIC_TIME * abs((target_point.row_ind - row_ind) / 5);
+    //use HEURISTIC_TIME to estimate time left to reach target_point
     calTotalCost();
 }
 

@@ -1,9 +1,9 @@
+#ifndef NODE_H
+#define NODE_H
+
 #include <algorithm>
 #include <stdlib.h>
 #include "Initializations.h"
-
-#ifndef NODE_H
-#define NODE_H
 
 class Node
 {
@@ -16,16 +16,15 @@ private:
     double g = 0;  //cost from start to current node
     double h = 0;  //estimated cost from current to target node
     bool validity; //true - the node created is valid
+
     //information for parent node
     int parent_col;      //parent node column index
     int parent_row;      //parent node row index
     double parent_g = 0; //cost from start to parent cost
-public:
+
     //private methods
-    bool validPoint(int number);  //check if the col or row number is valid
-    bool isHazard();              //true if the current and parent nodes are both in hazard zone
-    bool dirChange(Node &parent); //true if the robot change direction
-    void calTotalCost();          //calculate total cost f
+    bool isHazard();     //true if the current and parent nodes are both in hazard zone
+    void calTotalCost(); //calculate total cost f
 
 public:
     //constructors and destructors
@@ -49,6 +48,8 @@ public:
     void setCurrentCost(double cost);  //set current cost g
 
     //public methods
+    bool validPoint(int number);               //check if the col or row number is valid
+    bool dirChange(Node &parent);              //true if the robot change direction
     double calculateTime(Node &parent);        //calculate time from parent to current node
     void calCurrentCost(Node &parent);         //calculate g
     void calHeuristic(Waypoint &target_point); //calculate h based on target point
